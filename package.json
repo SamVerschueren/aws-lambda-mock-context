@@ -1,6 +1,6 @@
 {
   "name": "aws-lambda-mock-context",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "This library returns a mock context object that can be used to test lambda functions.",
   "main": "index.js",
   "scripts": {
