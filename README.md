@@ -44,7 +44,7 @@ describe('Lambda Test', function() {
     it('Should call the succeed method', function(done) {
         Q.fcall(function() {
             // Call the handler method
-            return index.handler({hello: 'world'}, this.ctx);
+            return index.handler({hello: 'world'}, ctx);
         }).then(function() {
             // Test if the succeed method is called once
             ctx.succeed.should.be.calledOnce;
