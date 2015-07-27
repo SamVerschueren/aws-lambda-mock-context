@@ -1,0 +1,25 @@
+{
+  "name": "aws-lambda-mock-context",
+  "version": "0.0.1",
+  "description": "This library returns a mock context object that can be used to test lambda functions.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SamVerschueren/aws-lambda-mock-context.git"
+  },
+  "keywords": [
+    "aws",
+    "lambda",
+    "context",
+    "mock"
+  ],
+  "author": "Sam Verschueren",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SamVerschueren/aws-lambda-mock-context/issues"
+  },
+  "homepage": "https://github.com/SamVerschueren/aws-lambda-mock-context"
+}
