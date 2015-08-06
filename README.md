@@ -19,7 +19,7 @@ var chai = require('chai'),
     sinon = require('sinon'),
     sinonChai = require('sinonChai'),
     Q = require('q'),
-    ctx = require('aws-lambda-mock-context');;
+    ctx = require('aws-lambda-mock-context');
 
 // Use the should flavour
 chai.should();
