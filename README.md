@@ -10,54 +10,43 @@ npm install --save aws-lambda-mock-context
 
 ## Usage
 
-The library can be used in combination with [SinonJS](http://sinonjs.org/) to test if the correct
-methods are called.
+This library can be used with promises or callbacks.
 
 ```javascript
 // module dependencies
-var chai = require('chai'),
-    sinon = require('sinon'),
-    sinonChai = require('sinonChai'),
-    Q = require('q'),
-    ctx = require('aws-lambda-mock-context');
-
-// Use the should flavour
-chai.should();
-chai.use(sinonChai);
+var context = require('aws-lambda-mock-context');
 
 // Start the test
 describe('Lambda Test', function() {
     
-    // Create a new context
-    var ctx = context();
-    
-    beforeEach(function() {
-        // Spy the succeed function
-        sinon.spy(ctx, 'succeed');
-    });
-    
-    afterEach(function() {
-        // Restore it back to normal
-        ctx.succeed.restore();
-    });
-    
     it('Should call the succeed method', function(done) {
-        Q.fcall(function() {
-            // Call the handler method
-            return index.handler({hello: 'world'}, ctx);
-        }).then(function() {
-            // Test if the succeed method is called once
-            ctx.succeed.should.be.calledOnce;
-            
-            done();
-        });
+        index.handler({hello: 'world'}, context());
+        
+        context.Promise
+            .then(function() {
+                // succeed() called
+                done();
+            })
+            .catch(function(err) {
+                // fail() called
+                done(err);
+            });
+    });
+    
+    it('Should call the fail method', function(done) {
+        index.handler({hello: 'wrld'}, context(function(err, result) {
+            if(err) {
+                // If we have an error, it's fine
+                done();   
+            }
+            else {
+                // If we don't have an error, it means the fail() method was not called
+                done(new Error('Fail not called');   
+            }
+        ));
     });
 });
 ```
-
-If the handler method is asynchronous, make sure it returns a promise. If you don't return
-a promise, the test will fail. This is because the handler returns but at that moment, the
-`succeed` method is not yet called.
 
 ## Contributors
 
