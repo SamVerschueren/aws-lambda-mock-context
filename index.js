@@ -11,13 +11,23 @@
 // module dependencies
 var uuid = require('node-uuid'),
     moment = require('moment'),
+    Q = require('q'),
     pkg = require('./package.json');
 
 // Export a function that creates a new context
-module.exports = function() {
+module.exports = function(cb) {
+    // Use an empty function if no callback is provided
+    cb = cb || function() {};
+    
     // Calculate some id's
     var id = uuid.v1(),
         stream = uuid.v4().replace(/-/g, '');
+    
+    // Create a deferred promise
+    var deferred = Q.defer();
+    
+    // Expose the promise
+    module.exports.Promise = deferred.promise;
     
     // Return the new object
     return {
@@ -29,8 +39,16 @@ module.exports = function() {
         memoryLimitInMB: '128',
         functionVersion: 'HEAD',
         isDefaultFunctionVersion: true,
-        succeed: function(result) {},
-        fail: function(err) {},
+        succeed: function(result) {
+            // Resolve the promise
+            deferred.resolve(result);
+            cb(undefined, result);
+        },
+        fail: function(err) {
+            // Reject the promise
+            deferred.reject(err);
+            cb(err);
+        },
         done: function(err, result) {
             if(err) {
                 return this.fail(err);

@@ -24,6 +24,7 @@
   "homepage": "https://github.com/SamVerschueren/aws-lambda-mock-context",
   "dependencies": {
     "moment": "^2.10.5",
-    "node-uuid": "^1.4.3"
+    "node-uuid": "^1.4.3",
+    "q": "^1.4.1"
   }
 }
