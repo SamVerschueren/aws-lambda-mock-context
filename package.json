@@ -4,7 +4,7 @@
   "description": "This library returns a mock context object that can be used to test lambda functions.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "xo && ava"
   },
   "repository": {
     "type": "git",
@@ -16,6 +16,9 @@
     "context",
     "mock"
   ],
+  "files": [
+    "index.js"
+  ],
   "author": "Sam Verschueren",
   "license": "MIT",
   "bugs": {
@@ -25,6 +28,16 @@
   "dependencies": {
     "moment": "^2.10.5",
     "node-uuid": "^1.4.3",
-    "q": "^1.4.1"
+    "pinkie-defer": "^1.0.0",
+    "pinkie-promise": "^1.0.0"
+  },
+  "devDependencies": {
+    "ava": "*",
+    "xo": "*"
+  },
+  "xo": {
+    "ignores": [
+      "test.js"
+    ]
   }
 }

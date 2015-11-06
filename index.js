@@ -1,64 +1,42 @@
 'use strict';
+var format = require('util').format;
+var uuid = require('node-uuid');
+var moment = require('moment');
+var Promise = require('pinkie-promise');
+var defer = require('pinkie-defer');
+var pkg = require('./package.json');
 
-/**
- * This exported function generates a new context object that can be used
- * for mocking purposes when testing a lambda function in NodeJS.
- * 
- * @author Sam Verschueren      <sam.verschueren@gmail.com>
- * @since  27 Jul. 2015
- */
+module.exports = function () {
+	var id = uuid.v1();
+	var stream = uuid.v4().replace(/-/g, '');
+	var account = uuid.v1().replace(/-/g, '').substr(0, 12);
 
-// module dependencies
-var uuid = require('node-uuid'),
-    moment = require('moment'),
-    Q = require('q'),
-    pkg = require('./package.json');
+	var deferred = defer();
 
-// Export a function that creates a new context
-module.exports = function(cb) {
-    // Use an empty function if no callback is provided
-    cb = cb || function() {};
-    
-    // Calculate some id's
-    var id = uuid.v1(),
-        stream = uuid.v4().replace(/-/g, '');
-    
-    // Create a deferred promise
-    var deferred = Q.defer();
-    
-    // Expose the promise
-    module.exports.Promise = deferred.promise;
-    
-    // Return the new object
-    return {
-        awsRequestId: id,
-        invokeid: id,
-        logGroupName: '/aws/lambda/' + pkg.name,
-        logStreamName: moment().format('YYYY/MM/DD') + '/[HEAD]' + stream,
-        functionName: pkg.name,
-        memoryLimitInMB: '128',
-        functionVersion: 'HEAD',
-        isDefaultFunctionVersion: true,
-        succeed: function(result) {
-            // Resolve the promise
-            deferred.resolve(result);
-            cb(undefined, result);
-        },
-        fail: function(err) {
-            // Reject the promise
-            deferred.reject(err);
-            cb(err);
-        },
-        done: function(err, result) {
-            if(err) {
-                return this.fail(err);
-            }
-            
-            this.succeed(result);
-        },
-        getRemainingTimeInMillis: function() {
-            // Generate random value between 100 and 3000
-            return Math.floor(Math.random() * (3000 - 100)) + 100;
-        }
-    };
+	return {
+		functionName: pkg.name,
+		functionVersion: '$LATEST',
+		invokedFunctionArn: format('arn:aws:lambda:us-west-1:%s:function:%s', account, pkg.name),
+		memoryLimitInMB: '128',
+		awsRequestId: id,
+		logGroupName: format('/aws/lambda/%s', pkg.name),
+		logStreamName: format('%s/[$LATEST]/%s', moment().format('YYYY/MM/DD'), stream),
+		succeed: function (result) {
+			deferred.resolve(result);
+		},
+		fail: function (err) {
+			deferred.reject(err);
+		},
+		done: function (err, result) {
+			if (err) {
+				return this.fail(err);
+			}
+
+			this.succeed(result);
+		},
+		getRemainingTimeInMillis: function () {
+			return Math.floor(Math.random() * (3000 - 100)) + 100;
+		},
+		Promise: new Promise(deferred)
+	};
 };
