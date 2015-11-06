@@ -1,4 +1,4 @@
-# aws-lambda-mock-context
+# aws-lambda-mock-context [![Build Status](https://travis-ci.org/SamVerschueren/aws-lambda-mock-context.svg?branch=master)](https://travis-ci.org/SamVerschueren/aws-lambda-mock-context)
 
 > AWS Lambda mock context object
 
