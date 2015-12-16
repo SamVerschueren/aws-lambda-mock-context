@@ -5,7 +5,7 @@
 
 ## Installation
 
-```bash
+```
 npm install --save aws-lambda-mock-context
 ```
 
@@ -13,20 +13,68 @@ npm install --save aws-lambda-mock-context
 ## Usage
 
 ```js
-var context = require('aws-lambda-mock-context');
+const context = require('aws-lambda-mock-context');
 
-var ctx = context();
+const ctx = context();
 
 index.handler({hello: 'world'}, ctx);
 
 ctx.Promise
-    .then(function () {
+    .then(() => {
         //=> succeed() called
     })
-    .catch(function (err) {
+    .catch(err => {
         //=> fail() called
     });
 ```
+
+
+## API
+
+### context(options)
+
+#### options
+
+##### region
+
+Type: `string`  
+Default: `us-west-1`
+
+The AWS region.
+
+##### account
+
+Type: `string`  
+Default: `123456789012`
+
+The account number.
+
+##### functionName
+
+Type: `string`  
+Default: `aws-lambda-mock-context`
+
+The name of the function.
+
+##### functionVersion
+
+Type: `string`  
+Default: `$LATEST`
+
+The version of the function.
+
+##### memoryLimitInMB
+
+Type: `string`  
+Default: `128`
+
+The memory limit.
+
+##### alias
+
+Type: `string`
+
+The alias of the function.
 
 
 ## Related

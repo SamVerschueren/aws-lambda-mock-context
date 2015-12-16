@@ -4,23 +4,32 @@ var uuid = require('node-uuid');
 var moment = require('moment');
 var Promise = require('pinkie-promise');
 var defer = require('pinkie-defer');
+var objectAssign = require('object-assign');
 var pkg = require('./package.json');
 
-module.exports = function () {
+module.exports = function (opts) {
 	var id = uuid.v1();
 	var stream = uuid.v4().replace(/-/g, '');
-	var account = uuid.v1().replace(/-/g, '').substr(0, 12);
+
+	opts = objectAssign({
+		region: 'us-west-1',
+		account: '123456789012',
+		functionName: pkg.name,
+		functionVersion: '$LATEST',
+		memoryLimitInMB: '128'
+	}, opts);
 
 	var deferred = defer();
 
 	return {
-		functionName: pkg.name,
-		functionVersion: '$LATEST',
-		invokedFunctionArn: format('arn:aws:lambda:us-west-1:%s:function:%s', account, pkg.name),
-		memoryLimitInMB: '128',
+		functionName: opts.functionName,
+		functionVersion: opts.functionVersion,
+		invokedFunctionArn: format('arn:aws:lambda:%s:%s:function:%s:%s', opts.region, opts.account, opts.functionName, opts.alias || opts.functionVersion),
+		memoryLimitInMB: opts.memoryLimitInMB,
 		awsRequestId: id,
-		logGroupName: format('/aws/lambda/%s', pkg.name),
-		logStreamName: format('%s/[$LATEST]/%s', moment().format('YYYY/MM/DD'), stream),
+		invokeid: id,
+		logGroupName: format('/aws/lambda/%s', opts.functionName),
+		logStreamName: format('%s/[%s]/%s', moment().format('YYYY/MM/DD'), opts.functionVersion, stream),
 		succeed: function (result) {
 			deferred.resolve(result);
 		},

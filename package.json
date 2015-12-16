@@ -28,16 +28,12 @@
   "dependencies": {
     "moment": "^2.10.5",
     "node-uuid": "^1.4.3",
+    "object-assign": "^4.0.1",
     "pinkie-defer": "^1.0.0",
     "pinkie-promise": "^1.0.0"
   },
   "devDependencies": {
     "ava": "*",
     "xo": "*"
-  },
-  "xo": {
-    "ignores": [
-      "test.js"
-    ]
   }
 }

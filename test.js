@@ -1,50 +1,54 @@
 import test from 'ava';
 import fn from './';
 
-test('succeed', async t => {
+function invokeAsync(method, result) {
 	const ctx = fn();
 
 	setTimeout(() => {
-		ctx.succeed('baz');
+		if (Array.isArray(result)) {
+			ctx[method].apply(ctx, result);
+			return;
+		}
+
+		ctx[method](result);
 	}, 500);
 
-	t.is(await ctx.Promise, 'baz');
+	return ctx.Promise;
+}
+
+test('succeed', async t => {
+	t.is(await invokeAsync('succeed', 'baz'), 'baz');
+	t.is(await invokeAsync('done', [undefined, 'baz']), 'baz');
 });
 
 test('fail', async t => {
-	const ctx = fn();
-
-	setTimeout(() => {
-		ctx.fail(new Error('promise fail'));
-	}, 500);
-
-	try {
-		await ctx.Promise;
-	} catch (err) {
-		t.is(err.message, 'promise fail');
-	}
+	await t.throws(invokeAsync('fail', new Error('promise fail')), 'promise fail');
+	await t.throws(invokeAsync('done', new Error('promise fail')), 'promise fail');
 });
 
-test('done', async t => {
+test('result', t => {
 	const ctx = fn();
 
-	setTimeout(() => {
-		ctx.done(undefined, 'bazz');
-	}, 500);
-
-	t.is(await ctx.Promise, 'bazz');
+	t.is(ctx.functionName, 'aws-lambda-mock-context');
+	t.is(ctx.functionVersion, '$LATEST');
+	t.is(ctx.memoryLimitInMB, '128');
+	t.is(ctx.logGroupName, '/aws/lambda/aws-lambda-mock-context');
+	t.is(ctx.invokedFunctionArn, 'arn:aws:lambda:us-west-1:123456789012:function:aws-lambda-mock-context:$LATEST');
 });
 
-test('done err', async t => {
-	const ctx = fn();
+test('options', t => {
+	const ctx = fn({
+		region: 'eu-west-1',
+		account: '210987654321',
+		functionName: 'test',
+		functionVersion: '1',
+		memoryLimitInMB: '512',
+		alias: 'production'
+	});
 
-	setTimeout(() => {
-		ctx.done(new Error('done fail'));
-	}, 500);
-
-	try {
-		await ctx.Promise;
-	} catch (err) {
-		t.is(err.message, 'done fail');
-	}
+	t.is(ctx.functionName, 'test');
+	t.is(ctx.functionVersion, '1');
+	t.is(ctx.memoryLimitInMB, '512');
+	t.is(ctx.logGroupName, '/aws/lambda/test');
+	t.is(ctx.invokedFunctionArn, 'arn:aws:lambda:eu-west-1:210987654321:function:test:production');
 });
