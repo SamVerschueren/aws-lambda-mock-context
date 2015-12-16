@@ -14,7 +14,11 @@
     "aws",
     "lambda",
     "context",
-    "mock"
+    "ctx",
+    "function",
+    "mocking",
+    "mock",
+    "promise"
   ],
   "files": [
     "index.js"
