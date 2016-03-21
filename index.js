@@ -34,6 +34,10 @@ module.exports = function (opts) {
 			deferred.resolve(result);
 		},
 		fail: function (err) {
+			if (typeof err === 'string') {
+				err = new Error(err);
+			}
+
 			deferred.reject(err);
 		},
 		done: function (err, result) {
