@@ -1,6 +1,6 @@
 {
   "name": "aws-lambda-mock-context",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "AWS Lambda mock context object",
   "license": "MIT",
   "author": {
