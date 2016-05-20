@@ -2,14 +2,21 @@
   "name": "aws-lambda-mock-context",
   "version": "2.0.0",
   "description": "AWS Lambda mock context object",
-  "main": "index.js",
+  "license": "MIT",
+  "author": {
+    "name": "Sam Verschueren",
+    "email": "sam.verschueren@gmail.com",
+    "url": "https://github.com/SamVerschueren"
+  },
+  "engines": {
+    "node": ">=4"
+  },
   "scripts": {
     "test": "xo && ava"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/SamVerschueren/aws-lambda-mock-context.git"
-  },
+  "files": [
+    "index.js"
+  ],
   "keywords": [
     "aws",
     "lambda",
@@ -20,24 +27,16 @@
     "mock",
     "promise"
   ],
-  "files": [
-    "index.js"
-  ],
-  "author": "Sam Verschueren",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/SamVerschueren/aws-lambda-mock-context/issues"
-  },
-  "homepage": "https://github.com/SamVerschueren/aws-lambda-mock-context",
   "dependencies": {
     "moment": "^2.10.5",
     "node-uuid": "^1.4.3",
-    "object-assign": "^4.0.1",
-    "pinkie-defer": "^1.0.0",
-    "pinkie-promise": "^1.0.0"
+    "pinkie-defer": "^1.0.0"
   },
   "devDependencies": {
     "ava": "*",
     "xo": "*"
+  },
+  "xo": {
+    "esnext": true
   }
 }

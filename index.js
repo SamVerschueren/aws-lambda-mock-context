@@ -1,54 +1,52 @@
 'use strict';
-var format = require('util').format;
-var uuid = require('node-uuid');
-var moment = require('moment');
-var Promise = require('pinkie-promise');
-var defer = require('pinkie-defer');
-var objectAssign = require('object-assign');
-var pkg = require('./package.json');
+const uuid = require('node-uuid');
+const moment = require('moment');
+const defer = require('pinkie-defer');
+const pkg = require('./package.json');
 
-module.exports = function (opts) {
-	var id = uuid.v1();
-	var stream = uuid.v4().replace(/-/g, '');
+module.exports = options => {
+	const id = uuid.v1();
+	const stream = uuid.v4().replace(/-/g, '');
 
-	opts = objectAssign({
+	const opts = Object.assign({
 		region: 'us-west-1',
 		account: '123456789012',
 		functionName: pkg.name,
 		functionVersion: '$LATEST',
 		memoryLimitInMB: '128'
-	}, opts);
+	}, options);
 
-	var deferred = defer();
+	const deferred = defer();
 
 	return {
+		callbackWaitsForEmptyEventLoop: true,
 		functionName: opts.functionName,
 		functionVersion: opts.functionVersion,
-		invokedFunctionArn: format('arn:aws:lambda:%s:%s:function:%s:%s', opts.region, opts.account, opts.functionName, opts.alias || opts.functionVersion),
+		invokedFunctionArn: `arn:aws:lambda:${opts.region}:${opts.account}:function:${opts.functionName}:${opts.alias || opts.functionVersion}`,
 		memoryLimitInMB: opts.memoryLimitInMB,
 		awsRequestId: id,
 		invokeid: id,
-		logGroupName: format('/aws/lambda/%s', opts.functionName),
-		logStreamName: format('%s/[%s]/%s', moment().format('YYYY/MM/DD'), opts.functionVersion, stream),
-		succeed: function (result) {
+		logGroupName: `/aws/lambda/${opts.functionName}`,
+		logStreamName: `${moment().format('YYYY/MM/DD')}/[${opts.functionVersion}]/${stream}`,
+		getRemainingTimeInMillis: () => Math.floor(Math.random() * (3000 - 100)) + 100,
+		succeed: result => {
 			deferred.resolve(result);
 		},
-		fail: function (err) {
+		fail: err => {
 			if (typeof err === 'string') {
 				err = new Error(err);
 			}
 
 			deferred.reject(err);
 		},
+		// eslint-disable-next-line
 		done: function (err, result) {
 			if (err) {
-				return this.fail(err);
+				this.fail(err);
+				return;
 			}
 
 			this.succeed(result);
-		},
-		getRemainingTimeInMillis: function () {
-			return Math.floor(Math.random() * (3000 - 100)) + 100;
 		},
 		Promise: new Promise(deferred)
 	};

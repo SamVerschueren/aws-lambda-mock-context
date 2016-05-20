@@ -37,44 +37,44 @@ ctx.Promise
 
 ##### region
 
-Type: `string`  
+Type: `string`<br>
 Default: `us-west-1`
 
-The AWS region.
+AWS region.
 
 ##### account
 
-Type: `string`  
+Type: `string`<br>
 Default: `123456789012`
 
-The account number.
+Account number.
 
 ##### functionName
 
-Type: `string`  
+Type: `string`<br>
 Default: `aws-lambda-mock-context`
 
-The name of the function.
+Name of the function.
 
 ##### functionVersion
 
-Type: `string`  
+Type: `string`<br>
 Default: `$LATEST`
 
-The version of the function.
+Version of the function.
 
 ##### memoryLimitInMB
 
-Type: `string`  
+Type: `string`<br>
 Default: `128`
 
-The memory limit.
+Memory limit.
 
 ##### alias
 
 Type: `string`
 
-The alias of the function.
+Alias of the function.
 
 
 ## Related
@@ -84,4 +84,4 @@ The alias of the function.
 
 ## License
 
-MIT © Sam Verschueren
+MIT © [Sam Verschueren](https://github.com/SamVerschueren)
