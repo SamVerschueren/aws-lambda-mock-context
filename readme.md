@@ -6,7 +6,7 @@
 ## Installation
 
 ```
-$ npm install --save aws-lambda-mock-context
+$ npm install --save-dev aws-lambda-mock-context
 ```
 
 
