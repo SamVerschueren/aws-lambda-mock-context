@@ -18,7 +18,7 @@ module.exports = options => {
 
 	const deferred = defer();
 
-	return {
+	const context = {
 		callbackWaitsForEmptyEventLoop: true,
 		functionName: opts.functionName,
 		functionVersion: opts.functionVersion,
@@ -39,15 +39,16 @@ module.exports = options => {
 
 			deferred.reject(err);
 		},
-		// eslint-disable-next-line
-		done: function (err, result) {
+		done: (err, result) => {
 			if (err) {
-				this.fail(err);
+				context.fail(err);
 				return;
 			}
 
-			this.succeed(result);
+			context.succeed(result);
 		},
 		Promise: new Promise(deferred)
 	};
+
+	return context;
 };

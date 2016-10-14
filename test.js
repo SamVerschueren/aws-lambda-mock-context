@@ -1,8 +1,8 @@
 import test from 'ava';
-import fn from './';
+import m from './';
 
 function invokeAsync(method, result) {
-	const ctx = fn();
+	const ctx = m();
 
 	setTimeout(() => {
 		if (Array.isArray(result)) {
@@ -28,7 +28,7 @@ test('fail', async t => {
 });
 
 test('result', t => {
-	const ctx = fn();
+	const ctx = m();
 
 	t.is(ctx.functionName, 'aws-lambda-mock-context');
 	t.is(ctx.functionVersion, '$LATEST');
@@ -38,7 +38,7 @@ test('result', t => {
 });
 
 test('options', t => {
-	const ctx = fn({
+	const ctx = m({
 		region: 'eu-west-1',
 		account: '210987654321',
 		functionName: 'test',
