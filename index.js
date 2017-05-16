@@ -13,10 +13,14 @@ module.exports = options => {
 		account: '123456789012',
 		functionName: pkg.name,
 		functionVersion: '$LATEST',
-		memoryLimitInMB: '128'
+		memoryLimitInMB: '128',
+		timeout: 3
 	}, options);
 
 	const deferred = defer();
+
+	const start = Date.now();
+	let end;
 
 	const context = {
 		callbackWaitsForEmptyEventLoop: true,
@@ -28,11 +32,19 @@ module.exports = options => {
 		invokeid: id,
 		logGroupName: `/aws/lambda/${opts.functionName}`,
 		logStreamName: `${moment().format('YYYY/MM/DD')}/[${opts.functionVersion}]/${stream}`,
-		getRemainingTimeInMillis: () => Math.floor(Math.random() * (3000 - 100)) + 100,
+		getRemainingTimeInMillis: () => {
+			const endTime = end || Date.now();
+
+			return (opts.timeout * 1000) - (endTime - start);
+		},
 		succeed: result => {
+			end = Date.now();
+
 			deferred.resolve(result);
 		},
 		fail: err => {
+			end = Date.now();
+
 			if (typeof err === 'string') {
 				err = new Error(err);
 			}

@@ -76,6 +76,13 @@ Type: `string`
 
 Alias of the function.
 
+##### timeout
+
+Type: `number`<br>
+Default: `3`
+
+Timeout of the lambda function in seconds.
+
 
 ## Related
 

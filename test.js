@@ -1,4 +1,5 @@
 import test from 'ava';
+import delay from 'delay';
 import m from './';
 
 function invokeAsync(method, result) {
@@ -52,4 +53,37 @@ test('options', t => {
 	t.is(ctx.memoryLimitInMB, '512');
 	t.is(ctx.logGroupName, '/aws/lambda/test');
 	t.is(ctx.invokedFunctionArn, 'arn:aws:lambda:eu-west-1:210987654321:function:test:production');
+});
+
+test('remaining time', async t => {
+	const ctx = m();
+
+	await delay(1000);
+
+	const ms = ctx.getRemainingTimeInMillis();
+
+	t.true(ms <= 2000 && ms > 1900);
+
+	await delay(10);
+
+	t.true(ctx.getRemainingTimeInMillis() < ms);
+
+	ctx.succeed();
+
+	const msAfterSuccess = ctx.getRemainingTimeInMillis();
+
+	await delay(100);
+
+	t.true(ctx.getRemainingTimeInMillis() === msAfterSuccess);
+});
+
+test('set function timeout', async t => {
+	const ctx = m({
+		timeout: 10
+	});
+
+	await delay(1000);
+
+	const ms = ctx.getRemainingTimeInMillis();
+	t.true(ms <= 9000 && ms > 8900);
 });
