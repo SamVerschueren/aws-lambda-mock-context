@@ -22,9 +22,9 @@ test('succeed', async t => {
 });
 
 test('fail', async t => {
-	t.throws(invokeAsync('fail', 'promise fail'), 'promise fail');
-	t.throws(invokeAsync('fail', new Error('promise fail')), 'promise fail');
-	t.throws(invokeAsync('done', new Error('promise fail')), 'promise fail');
+	await t.throws(invokeAsync('fail', 'promise fail'), 'promise fail');
+	await t.throws(invokeAsync('fail', new Error('promise fail')), 'promise fail');
+	await t.throws(invokeAsync('done', new Error('promise fail')), 'promise fail');
 });
 
 test('result', t => {
