@@ -34,8 +34,9 @@ module.exports = options => {
 		logStreamName: `${moment().format('YYYY/MM/DD')}/[${opts.functionVersion}]/${stream}`,
 		getRemainingTimeInMillis: () => {
 			const endTime = end || Date.now();
+			const remainingTime = (opts.timeout * 1000) - (endTime - start);
 
-			return (opts.timeout * 1000) - (endTime - start);
+			return Math.max(0, remainingTime);
 		},
 		succeed: result => {
 			end = Date.now();
@@ -61,6 +62,12 @@ module.exports = options => {
 		},
 		Promise: new Promise(deferred)
 	};
+
+	setTimeout(() => {
+		if (context.getRemainingTimeInMillis() === 0) {
+			context.fail(new Error(`Task timed out after ${opts.timeout}.00 seconds`));
+		}
+	}, opts.timeout * 1000);
 
 	return context;
 };

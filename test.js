@@ -1,9 +1,17 @@
 import test from 'ava';
 import delay from 'delay';
+import inRange from 'in-range';
 import m from './';
 
-function invokeAsync(method, result) {
-	const ctx = m();
+function invokeAsync(method, result, opts) {
+	opts = Object.assign({
+		ms: 500,
+		timeout: 3
+	}, opts);
+
+	const ctx = m({
+		timeout: opts.timeout
+	});
 
 	setTimeout(() => {
 		if (Array.isArray(result)) {
@@ -12,7 +20,7 @@ function invokeAsync(method, result) {
 		}
 
 		ctx[method](result);
-	}, 500);
+	}, opts.ms);
 
 	return ctx.Promise;
 }
@@ -36,6 +44,8 @@ test('result', t => {
 	t.is(ctx.memoryLimitInMB, '128');
 	t.is(ctx.logGroupName, '/aws/lambda/aws-lambda-mock-context');
 	t.is(ctx.invokedFunctionArn, 'arn:aws:lambda:us-west-1:123456789012:function:aws-lambda-mock-context:$LATEST');
+
+	ctx.succeed();
 });
 
 test('options', t => {
@@ -53,6 +63,8 @@ test('options', t => {
 	t.is(ctx.memoryLimitInMB, '512');
 	t.is(ctx.logGroupName, '/aws/lambda/test');
 	t.is(ctx.invokedFunctionArn, 'arn:aws:lambda:eu-west-1:210987654321:function:test:production');
+
+	ctx.succeed();
 });
 
 test('remaining time', async t => {
@@ -62,7 +74,7 @@ test('remaining time', async t => {
 
 	const ms = ctx.getRemainingTimeInMillis();
 
-	t.true(ms <= 2000 && ms > 1900);
+	t.true(inRange(ctx.getRemainingTimeInMillis(), 1950, 2050));
 
 	await delay(10);
 
@@ -84,6 +96,10 @@ test('set function timeout', async t => {
 
 	await delay(1000);
 
-	const ms = ctx.getRemainingTimeInMillis();
-	t.true(ms <= 9000 && ms > 8900);
+	t.true(inRange(ctx.getRemainingTimeInMillis(), 8950, 9050));
+	ctx.succeed();
+});
+
+test('timeout throws error', async t => {
+	await t.throws(invokeAsync('succeed', 'foo', {ms: 2000, timeout: 1}), 'Task timed out after 1.00 seconds');
 });
