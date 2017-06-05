@@ -29,7 +29,7 @@
   ],
   "dependencies": {
     "moment": "^2.10.5",
-    "node-uuid": "^1.4.3",
+    "uuid": "^3.0.1",
     "pinkie-defer": "^1.0.0"
   },
   "devDependencies": {
