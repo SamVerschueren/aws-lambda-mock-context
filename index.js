@@ -1,5 +1,5 @@
 'use strict';
-const uuid = require('node-uuid');
+const uuid = require('uuid');
 const moment = require('moment');
 const defer = require('pinkie-defer');
 const pkg = require('./package.json');
