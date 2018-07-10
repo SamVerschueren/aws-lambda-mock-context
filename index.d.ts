@@ -1,4 +1,4 @@
-import {Context} from "aws-lambda";
+import {Context} from 'aws-lambda';
 
 interface ContextOptions {
 	region?: string;
