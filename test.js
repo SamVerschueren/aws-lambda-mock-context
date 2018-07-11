@@ -1,7 +1,7 @@
 import test from 'ava';
 import delay from 'delay';
 import inRange from 'in-range';
-import m from './';
+import m from '.';
 
 function invokeAsync(method, result, opts) {
 	opts = Object.assign({
@@ -15,7 +15,7 @@ function invokeAsync(method, result, opts) {
 
 	setTimeout(() => {
 		if (Array.isArray(result)) {
-			ctx[method].apply(ctx, result);
+			ctx[method](...result);
 			return;
 		}
 
