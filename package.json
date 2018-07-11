@@ -17,6 +17,7 @@
   "files": [
     "index.js"
   ],
+  "types": "index.d.ts",
   "keywords": [
     "aws",
     "lambda",
@@ -29,10 +30,11 @@
   ],
   "dependencies": {
     "moment": "^2.10.5",
-    "uuid": "^3.0.1",
-    "pinkie-defer": "^1.0.0"
+    "pinkie-defer": "^1.0.0",
+    "uuid": "^3.0.1"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.7",
     "ava": "*",
     "delay": "^2.0.0",
     "in-range": "^1.0.0",
