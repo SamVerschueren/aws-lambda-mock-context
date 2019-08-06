@@ -1,4 +1,4 @@
-import {Context} from 'aws-lambda';
+import { Context } from 'aws-lambda';
 
 interface ContextOptions {
 	region?: string;
@@ -10,8 +10,12 @@ interface ContextOptions {
 	timeout?: number;
 }
 
+interface MockContext extends Context {
+	Promise: Promise<any>;
+}
+
 declare var mockContext: {
-	(options?: ContextOptions): Context;
+	(options?: ContextOptions): MockContext;
 };
 
 export = mockContext;
