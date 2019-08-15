@@ -21,7 +21,13 @@ module.exports = options => {
 
 	const start = Date.now();
 	let end;
-	let timeout;
+	
+	const timeout = setTimeout(() => {
+		if (context.getRemainingTimeInMillis() === 0) {
+			context.fail(new Error(`Task timed out after ${opts.timeout}.00 seconds`));
+		}
+	}, opts.timeout * 1000);
+	
 	const context = {
 		callbackWaitsForEmptyEventLoop: true,
 		functionName: opts.functionName,
@@ -65,12 +71,6 @@ module.exports = options => {
 		},
 		Promise: new Promise(deferred)
 	};
-
-	timeout = setTimeout(() => {
-		if (context.getRemainingTimeInMillis() === 0) {
-			context.fail(new Error(`Task timed out after ${opts.timeout}.00 seconds`));
-		}
-	}, opts.timeout * 1000);
 
 	return context;
 };
