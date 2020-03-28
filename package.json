@@ -9,10 +9,15 @@
 		"url": "https://github.com/SamVerschueren"
 	},
 	"engines": {
-		"node": ">=4"
+		"node": ">=7.6"
 	},
 	"scripts": {
 		"test": "xo && ava"
+	},
+	"ava": {
+		"require": [
+			"esm"
+		]
 	},
 	"files": [
 		"index.js",
@@ -34,11 +39,12 @@
 		"uuid": "^3.0.1"
 	},
 	"devDependencies": {
-		"@types/aws-lambda": "^8.10.7",
-		"ava": "*",
-		"delay": "^2.0.0",
-		"in-range": "^1.0.0",
-		"xo": "^0.20.3"
+		"@types/aws-lambda": "^8.10.46",
+		"ava": "^3.5.1",
+		"delay": "^4.3.0",
+		"esm": "^3.2.25",
+		"in-range": "^2.0.0",
+		"xo": "^0.28.1"
 	},
 	"types": "index.d.ts"
 }

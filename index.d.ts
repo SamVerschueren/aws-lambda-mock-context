@@ -1,4 +1,4 @@
-import { Context } from 'aws-lambda';
+import {Context} from 'aws-lambda';
 
 interface ContextOptions {
 	region?: string;
@@ -14,8 +14,8 @@ interface MockContext extends Context {
 	Promise: Promise<any>;
 }
 
-declare var mockContext: {
-	(options?: ContextOptions): MockContext;
-};
+type MockInitialize = (options?: ContextOptions) => MockContext;
+
+declare const mockContext: MockInitialize;
 
 export = mockContext;

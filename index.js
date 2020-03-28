@@ -4,18 +4,18 @@ const moment = require('moment');
 const defer = require('pinkie-defer');
 const pkg = require('./package.json');
 
-module.exports = options => {
+module.exports = userOptions => {
 	const id = uuid.v1();
 	const stream = uuid.v4().replace(/-/g, '');
 
-	const opts = Object.assign({
+	const options = Object.assign({
 		region: 'us-west-1',
 		account: '123456789012',
 		functionName: pkg.name,
 		functionVersion: '$LATEST',
 		memoryLimitInMB: '128',
 		timeout: 3
-	}, options);
+	}, userOptions);
 
 	const deferred = defer();
 
@@ -24,17 +24,17 @@ module.exports = options => {
 	let timeout = null;
 	const context = {
 		callbackWaitsForEmptyEventLoop: true,
-		functionName: opts.functionName,
-		functionVersion: opts.functionVersion,
-		invokedFunctionArn: `arn:aws:lambda:${opts.region}:${opts.account}:function:${opts.functionName}:${opts.alias || opts.functionVersion}`,
-		memoryLimitInMB: opts.memoryLimitInMB,
+		functionName: options.functionName,
+		functionVersion: options.functionVersion,
+		invokedFunctionArn: `arn:aws:lambda:${options.region}:${options.account}:function:${options.functionName}:${options.alias || options.functionVersion}`,
+		memoryLimitInMB: options.memoryLimitInMB,
 		awsRequestId: id,
 		invokeid: id,
-		logGroupName: `/aws/lambda/${opts.functionName}`,
-		logStreamName: `${moment().format('YYYY/MM/DD')}/[${opts.functionVersion}]/${stream}`,
+		logGroupName: `/aws/lambda/${options.functionName}`,
+		logStreamName: `${moment().format('YYYY/MM/DD')}/[${options.functionVersion}]/${stream}`,
 		getRemainingTimeInMillis: () => {
 			const endTime = end || Date.now();
-			const remainingTime = (opts.timeout * 1000) - (endTime - start);
+			const remainingTime = (options.timeout * 1000) - (endTime - start);
 
 			return Math.max(0, remainingTime);
 		},
@@ -56,6 +56,7 @@ module.exports = options => {
 			if (timeout) {
 				clearTimeout(timeout);
 			}
+
 			if (err) {
 				context.fail(err);
 				return;
@@ -68,9 +69,9 @@ module.exports = options => {
 
 	timeout = setTimeout(() => {
 		if (context.getRemainingTimeInMillis() === 0) {
-			context.fail(new Error(`Task timed out after ${opts.timeout}.00 seconds`));
+			context.fail(new Error(`Task timed out after ${options.timeout}.00 seconds`));
 		}
-	}, opts.timeout * 1000);
+	}, options.timeout * 1000);
 
 	return context;
 };

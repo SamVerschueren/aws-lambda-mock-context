@@ -3,14 +3,14 @@ import delay from 'delay';
 import inRange from 'in-range';
 import m from '.';
 
-function invokeAsync(method, result, opts) {
-	opts = Object.assign({
+function invokeAsync(method, result, options) {
+	options = Object.assign({
 		ms: 500,
 		timeout: 3
-	}, opts);
+	}, options);
 
 	const ctx = m({
-		timeout: opts.timeout
+		timeout: options.timeout
 	});
 
 	setTimeout(() => {
@@ -20,7 +20,7 @@ function invokeAsync(method, result, opts) {
 		}
 
 		ctx[method](result);
-	}, opts.ms);
+	}, options.ms);
 
 	return ctx.Promise;
 }
@@ -31,9 +31,9 @@ test('succeed', async t => {
 });
 
 test('fail', async t => {
-	await t.throws(invokeAsync('fail', 'promise fail'), 'promise fail');
-	await t.throws(invokeAsync('fail', new Error('promise fail')), 'promise fail');
-	await t.throws(invokeAsync('done', new Error('promise fail')), 'promise fail');
+	await t.throwsAsync(invokeAsync('fail', 'promise fail'), null, 'promise fail');
+	await t.throwsAsync(invokeAsync('fail', new Error('promise fail')), null, 'promise fail');
+	await t.throwsAsync(invokeAsync('done', new Error('promise fail')), null, 'promise fail');
 });
 
 test('result', t => {
@@ -74,7 +74,7 @@ test('remaining time', async t => {
 
 	const ms = ctx.getRemainingTimeInMillis();
 
-	t.true(inRange(ctx.getRemainingTimeInMillis(), 1950, 2050));
+	t.true(inRange(ctx.getRemainingTimeInMillis(), {start: 1950, end: 2050}));
 
 	await delay(10);
 
@@ -96,10 +96,10 @@ test('set function timeout', async t => {
 
 	await delay(1000);
 
-	t.true(inRange(ctx.getRemainingTimeInMillis(), 8950, 9050));
+	t.true(inRange(ctx.getRemainingTimeInMillis(), {start: 8950, end: 9050}));
 	ctx.succeed();
 });
 
 test('timeout throws error', async t => {
-	await t.throws(invokeAsync('succeed', 'foo', {ms: 2000, timeout: 1}), 'Task timed out after 1.00 seconds');
+	await t.throwsAsync(invokeAsync('succeed', 'foo', {ms: 2000, timeout: 1}), null, 'Task timed out after 1.00 seconds');
 });
