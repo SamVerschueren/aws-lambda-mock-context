@@ -1,12 +1,11 @@
 'use strict';
-const uuid = require('uuid');
-const moment = require('moment');
-const defer = require('pinkie-defer');
-const pkg = require('./package.json');
+import {v1 as uuidv1, v4 as uuidv4} from 'uuid';
+import defer from 'pinkie-defer';
+import pkg from './package.json';
 
-module.exports = userOptions => {
-	const id = uuid.v1();
-	const stream = uuid.v4().replace(/-/g, '');
+export default userOptions => {
+	const id = uuidv1();
+	const stream = uuidv4().replace(/-/g, '');
 
 	const options = {
 		region: 'us-west-1',
@@ -20,7 +19,13 @@ module.exports = userOptions => {
 
 	const deferred = defer();
 
-	const start = Date.now();
+	const d = new Date();
+	const logDateString = [
+		d.getFullYear(),
+		('0' + (d.getMonth() + 1)).slice(-2),
+		('0' + d.getDate()).slice(-2)
+	].join('/');
+	const start = d.getTime();
 	let end;
 	let timeout = null;
 	const context = {
@@ -32,7 +37,7 @@ module.exports = userOptions => {
 		awsRequestId: id,
 		invokeid: id,
 		logGroupName: `/aws/lambda/${options.functionName}`,
-		logStreamName: `${moment().format('YYYY/MM/DD')}/[${options.functionVersion}]/${stream}`,
+		logStreamName: `${logDateString}/[${options.functionVersion}]/${stream}`,
 		getRemainingTimeInMillis: () => {
 			const endTime = end || Date.now();
 			const remainingTime = (options.timeout * 1000) - (endTime - start);

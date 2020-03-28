@@ -34,15 +34,13 @@
 		"promise"
 	],
 	"dependencies": {
-		"moment": "^2.10.5",
 		"pinkie-defer": "^1.0.0",
-		"uuid": "^3.0.1"
+		"uuid": "^7.0.2"
 	},
 	"devDependencies": {
 		"@types/aws-lambda": "^8.10.46",
 		"ava": "^3.5.1",
 		"delay": "^4.3.0",
-		"esm": "^3.2.25",
 		"in-range": "^2.0.0",
 		"xo": "^0.28.1"
 	},

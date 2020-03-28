@@ -3,7 +3,7 @@ import delay from 'delay';
 import inRange from 'in-range';
 import m from '.';
 
-function invokeAsync(method, result, options) {
+const invokeAsync = (method, result, options) => {
 	options = {
 		ms: 500,
 		timeout: 3,
@@ -24,7 +24,7 @@ function invokeAsync(method, result, options) {
 	}, options.ms);
 
 	return ctx.Promise;
-}
+};
 
 test('succeed', async t => {
 	t.is(await invokeAsync('succeed', 'baz'), 'baz');
