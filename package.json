@@ -9,7 +9,7 @@
 		"url": "https://github.com/SamVerschueren"
 	},
 	"engines": {
-		"node": ">=7.6"
+		"node": ">=10.18.0"
 	},
 	"scripts": {
 		"test": "xo && ava"

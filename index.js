@@ -8,14 +8,15 @@ module.exports = userOptions => {
 	const id = uuid.v1();
 	const stream = uuid.v4().replace(/-/g, '');
 
-	const options = Object.assign({
+	const options = {
 		region: 'us-west-1',
 		account: '123456789012',
 		functionName: pkg.name,
 		functionVersion: '$LATEST',
 		memoryLimitInMB: '128',
-		timeout: 3
-	}, userOptions);
+		timeout: 3,
+		...userOptions
+	};
 
 	const deferred = defer();
 

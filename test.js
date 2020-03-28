@@ -4,10 +4,11 @@ import inRange from 'in-range';
 import m from '.';
 
 function invokeAsync(method, result, options) {
-	options = Object.assign({
+	options = {
 		ms: 500,
-		timeout: 3
-	}, options);
+		timeout: 3,
+		...options
+	};
 
 	const ctx = m({
 		timeout: options.timeout
