@@ -1,7 +1,7 @@
-import test from 'ava';
-import delay from 'delay';
-import inRange from 'in-range';
-import m from '.';
+const test = require('ava');
+const delay = require('delay');
+const inRange = require('in-range');
+const m = require('.');
 
 const invokeAsync = (method, result, options) => {
 	options = {

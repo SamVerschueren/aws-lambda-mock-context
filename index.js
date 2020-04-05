@@ -1,9 +1,9 @@
-'use strict';
-import {v1 as uuidv1, v4 as uuidv4} from 'uuid';
-import defer from 'pinkie-defer';
-import pkg from './package.json';
+const uuidv1 = require('uuid/v1');
+const uuidv4 = require('uuid/v4');
+const defer = require('pinkie-defer');
+const pkg = require('./package.json');
 
-export default userOptions => {
+const mockContext = userOptions => {
 	const id = uuidv1();
 	const stream = uuidv4().replace(/-/g, '');
 
@@ -81,3 +81,5 @@ export default userOptions => {
 
 	return context;
 };
+
+module.exports = mockContext;
