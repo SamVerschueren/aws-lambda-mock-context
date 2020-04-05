@@ -10,8 +10,12 @@ interface ContextOptions {
 	timeout?: number;
 }
 
-declare var mockContext: {
-	(options?: ContextOptions): Context;
-};
+interface MockContext extends Context {
+	Promise: Promise<any>;
+}
+
+type MockInitialize = (options?: ContextOptions) => MockContext;
+
+declare const mockContext: MockInitialize;
 
 export = mockContext;

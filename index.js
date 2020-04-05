@@ -1,40 +1,46 @@
-'use strict';
-const uuid = require('uuid');
-const moment = require('moment');
+const uuidv1 = require('uuid/v1');
+const uuidv4 = require('uuid/v4');
 const defer = require('pinkie-defer');
 const pkg = require('./package.json');
 
-module.exports = options => {
-	const id = uuid.v1();
-	const stream = uuid.v4().replace(/-/g, '');
+const mockContext = userOptions => {
+	const id = uuidv1();
+	const stream = uuidv4().replace(/-/g, '');
 
-	const opts = Object.assign({
+	const options = {
 		region: 'us-west-1',
 		account: '123456789012',
 		functionName: pkg.name,
 		functionVersion: '$LATEST',
 		memoryLimitInMB: '128',
-		timeout: 3
-	}, options);
+		timeout: 3,
+		...userOptions
+	};
 
 	const deferred = defer();
 
-	const start = Date.now();
+	const d = new Date();
+	const logDateString = [
+		d.getFullYear(),
+		('0' + (d.getMonth() + 1)).slice(-2),
+		('0' + d.getDate()).slice(-2)
+	].join('/');
+	const start = d.getTime();
 	let end;
-
+	let timeout = null;
 	const context = {
 		callbackWaitsForEmptyEventLoop: true,
-		functionName: opts.functionName,
-		functionVersion: opts.functionVersion,
-		invokedFunctionArn: `arn:aws:lambda:${opts.region}:${opts.account}:function:${opts.functionName}:${opts.alias || opts.functionVersion}`,
-		memoryLimitInMB: opts.memoryLimitInMB,
+		functionName: options.functionName,
+		functionVersion: options.functionVersion,
+		invokedFunctionArn: `arn:aws:lambda:${options.region}:${options.account}:function:${options.functionName}:${options.alias || options.functionVersion}`,
+		memoryLimitInMB: options.memoryLimitInMB,
 		awsRequestId: id,
 		invokeid: id,
-		logGroupName: `/aws/lambda/${opts.functionName}`,
-		logStreamName: `${moment().format('YYYY/MM/DD')}/[${opts.functionVersion}]/${stream}`,
+		logGroupName: `/aws/lambda/${options.functionName}`,
+		logStreamName: `${logDateString}/[${options.functionVersion}]/${stream}`,
 		getRemainingTimeInMillis: () => {
 			const endTime = end || Date.now();
-			const remainingTime = (opts.timeout * 1000) - (endTime - start);
+			const remainingTime = (options.timeout * 1000) - (endTime - start);
 
 			return Math.max(0, remainingTime);
 		},
@@ -53,6 +59,10 @@ module.exports = options => {
 			deferred.reject(err);
 		},
 		done: (err, result) => {
+			if (timeout) {
+				clearTimeout(timeout);
+			}
+
 			if (err) {
 				context.fail(err);
 				return;
@@ -63,11 +73,13 @@ module.exports = options => {
 		Promise: new Promise(deferred)
 	};
 
-	setTimeout(() => {
+	timeout = setTimeout(() => {
 		if (context.getRemainingTimeInMillis() === 0) {
-			context.fail(new Error(`Task timed out after ${opts.timeout}.00 seconds`));
+			context.fail(new Error(`Task timed out after ${options.timeout}.00 seconds`));
 		}
-	}, opts.timeout * 1000);
+	}, options.timeout * 1000);
 
 	return context;
 };
+
+module.exports = mockContext;
